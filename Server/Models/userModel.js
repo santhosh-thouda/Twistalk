@@ -30,6 +30,10 @@ const UserSchema = mongoose.Schema(
         worksAt: String,
         country: String,
         relationship: String,
+        isPrivate: {
+            type: Boolean,
+            default: false
+        },
         followers: [],
         following: []
     },

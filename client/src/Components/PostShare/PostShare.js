@@ -1,125 +1,119 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react';
 import './PostShare.css';
-import PhotoOutlinedIcon from '@mui/icons-material/PhotoOutlined';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadImage, uploadPost } from '../../actions/UploadAction';
 
-
-
 const PostShare = () => {
-
-    const loading = useSelector((state) => state.postReducer.uploading)
+    const serverPublic = "http://localhost:5000/images/";
     const [image, setImage] = useState(null);
     const imageRef = useRef();
-    const dispatch = useDispatch();
     const desc = useRef();
     const { user } = useSelector((state) => state.authReducer.authData);
-    const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
-
+    const dispatch = useDispatch();
 
     const onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
-            let img = event.target.files[0];
-            setImage(img);
+            setImage(event.target.files[0]);
         }
-    }
-
-
-
+    };
 
     const reset = () => {
         setImage(null);
-        desc.current.value = ""
-    }
+        desc.current.value = "";
+    };
 
-
-
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (desc.current.value === "" && !image) {
+            alert("Please write something or upload an image");
+            return;
+        }
 
         const newPost = {
             userId: user._id,
             desc: desc.current.value,
-        }
+        };
 
-        if (image) {
-            const data = new FormData();
-            const filename = Date.now() + image.name;
-            data.append("name", filename);
-            data.append("file", image);
-
-            newPost.image = filename;
-
-            try {
-                dispatch(uploadImage(data))
-            } catch (error) {
-                console.log(error)
+        try {
+            if (image) {
+                const data = new FormData();
+                const filename = Date.now() + '-' + image.name;
+                data.append("file", image);
+                data.append("name", filename);
+                const res = await dispatch(uploadImage(data)); // ✅ wait for filename
+                newPost.image = res.filename; // ✅ use response
             }
-        }
 
-        dispatch(uploadPost(newPost))
-        reset()
-    }
+            dispatch(uploadPost(newPost));
+            reset();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="PostShare">
-            <img src={user.profilePicture ? serverPublic + user.profilePicture : serverPublic + "defaultProfile.png"} alt="" />
+            <img
+                src={
+                    user.profilePicture
+                        ? serverPublic + user.profilePicture
+                        : serverPublic + "defaultProfile.png"
+                }
+                alt=""
+            />
 
             <div>
-                <input type="text" placeholder='Write a caption...' required ref={desc} />
+                <input ref={desc} type="text" placeholder="What's happening?" />
 
                 <div className="postOptions">
-
-                    <div className="option" style={{ color: "var(--photo)" }}
+                    <div
+                        className="option"
+                        style={{ color: "var(--photo)" }}
                         onClick={() => imageRef.current.click()}
                     >
-                        <PhotoOutlinedIcon />
-                        Photo
+                        📷 Photo
                     </div>
-
                     <div className="option" style={{ color: "var(--video)" }}>
-                        <PlayCircleOutlineIcon />
-                        Video
+                        ▶️ Video
                     </div>
                     <div className="option" style={{ color: "var(--location)" }}>
-                        <LocationOnOutlinedIcon />
-                        Location
+                        📍 Location
                     </div>
                     <div className="option" style={{ color: "var(--shedule)" }}>
-                        <CalendarMonthOutlinedIcon />
-                        Shedule
+                        📅 Schedule
                     </div>
-
-                    <button className='button ps-button' onClick={handleSubmit} disabled={loading}>
-                        {loading ? "uploading..." : "Share"}
+                    <button className="button ps-button" onClick={handleSubmit}>
+                        Share
                     </button>
 
                     <div style={{ display: "none" }}>
                         <input
                             type="file"
-                            name='myImage'
+                            name="image"
                             ref={imageRef}
                             onChange={onImageChange}
                         />
                     </div>
                 </div>
 
-
                 {image && (
                     <div className="previewImage">
-                        <CloseOutlinedIcon onClick={() => setImage(null)} />
-                        <img src={URL.createObjectURL(image)} alt="" />
+                        <span
+                            onClick={() => setImage(null)}
+                            style={{ cursor: 'pointer', fontSize: '20px' }}
+                        >
+                            ✕
+                        </span>
+                        <img src={URL.createObjectURL(image)} alt="preview" />
+                        <div style={{ fontSize: '14px', marginTop: '6px', color: '#555' }}>
+                            Caption: {desc.current?.value || "No caption"}
+                        </div>
                     </div>
                 )}
-
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default PostShare
+export default PostShare;

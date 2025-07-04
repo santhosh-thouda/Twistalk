@@ -11,8 +11,16 @@ export const updateUser = (id, formData) => async (dispatch) => {
     }
 }
 
-
-
+export const getAllUsers = () => async (dispatch) => {
+    try {
+        const { data } = await UserApi.getAllUser();
+        dispatch({ type: 'SET_ALL_USERS', data });
+        return data;
+    } catch (error) {
+        // Optionally handle error
+        return [];
+    }
+}
 
 export const followUser = (id, data) => async (dispatch) => {
     dispatch({ type: "FOLLOW_USER", data: id })

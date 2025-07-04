@@ -5,41 +5,51 @@ import Share from '../../Img/share.png';
 import Like from '../../Img/like.png';
 import Notlike from '../../Img/notlike.png';
 import { useSelector } from 'react-redux';
-import { likePost } from '../../api/PostRequest';
+import { likePost, deletePost } from '../../api/PostRequest';
 
-
-
-const Post = ({ data }) => {
-
+const Post = ({ post }) => {
   const { user } = useSelector((state) => state.authReducer.authData)
-  const [liked, setLiked] = useState(data.likes.includes(user._id))
-  const [likes, setLikes] = useState(data.likes.length)
-
+  const [liked, setLiked] = useState(post.liked);
+  const [likes, setLikes] = useState(post.likes);
+  const serverPublic = "http://localhost:5000/images/";
 
   const handleLike = () => {
-    setLiked((prev) => !prev)
-    likePost(data._id, user._id)
-    liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1)
+    setLiked((prev) => !prev);
+    setLikes((prev) => (liked ? prev - 1 : prev + 1));
+    likePost(post._id, user._id);
+  };
+
+  const handleDelete = async () => {
+    if(window.confirm('Are you sure you want to delete this post?')) {
+      try {
+        await deletePost(post._id, user._id);
+        window.location.reload();
+      } catch (err) {
+        alert('Failed to delete post.');
+      }
+    }
   }
 
   return (
-    <div className='Post'>
-
-      <img src={data.image ? process.env.REACT_APP_PUBLIC_FOLDER + data.image : " "} alt="" />
-
+    <div className='Post' style={{ position: 'relative' }}>
+      <div className="Post-image-container">
+        <img src={post.image ? serverPublic + post.image : " "} alt="" />
+      </div>
+      {post.desc && (
+        <div className="post-caption" style={{ margin: '0.5em 0', fontStyle: 'italic', color: '#444' }}>{post.desc}</div>
+      )}
+      {user._id === post.userId && (
+        <button className="delete-post-btn" onClick={handleDelete} title="Delete Post">🗑️</button>
+      )}
       <div className="postReact">
-        <img src={liked ? Like : Notlike} alt="" style={{ cursor: "pointer" }} onClick={handleLike} />
-        <img src={Comment} alt="" />
-        <img src={Share} alt="" />
+        <img src={liked ? Like : Notlike} alt="Like" style={{ cursor: "pointer" }} onClick={handleLike} />
+        <img src={Comment} alt="Comment" />
+        <img src={Share} alt="Share" />
       </div>
-
-      <span style={{ color: "var(--gray)", fontSize: '14px' }}>{likes} likes</span>
-
+      <span className="likeCount">{likes} likes</span>
       <div className="detail">
-        <span> <b>{data.name}</b> </span>
-        <span>{data.desc}</span>
+        <span> <b>{post.name}</b> </span>
       </div>
-
     </div>
   )
 }

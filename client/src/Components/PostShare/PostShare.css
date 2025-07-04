@@ -60,16 +60,39 @@
     position: relative;
 }
 
-.previewImage > svg{
+.previewImage {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1; /* Instagram-like square */
+    margin-top: 0.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.previewImage > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0.5rem;
+}
+
+.previewImage > span {
     position: absolute;
-    right: 1rem;
-    top: 0.5rem;
+    top: 8px;
+    right: 12px;
+    font-size: 20px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 8px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
-.previewImage > img{
-    width: 100%;
-    height: 20rem;
-    object-fit: cover;
-    border-radius: 0.5rem;
+@media (max-width: 500px) {
+    .previewImage {
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
+    }
 }

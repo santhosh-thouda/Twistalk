@@ -34,7 +34,7 @@ const InfoCard = () => {
     }
 
     fetchProfileUser();
-  }, [user]);
+  }, [user, profileUserId]);
 
 
 

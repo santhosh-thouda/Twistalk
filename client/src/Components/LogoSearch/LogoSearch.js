@@ -1,13 +1,13 @@
 import React from 'react'
 import './LogoSearch.css'
-import Logo from '../../Img/logo.png';
+import Logo from '../../Img/logo2.png';
 import SearchIcon from '@mui/icons-material/Search';
 
 const LogoSearch = () => {
   return (
-    <div className='LogoSearch'>
+    <div className='LogoSearch' >
 
-      <img src={Logo} alt="" />
+      <img src={Logo} alt=""  style={{width: '68px', height: '40px', marginLeft: '5 px'}}/>
 
       <div className="Search">
         <input type="text" placeholder='#Search' />

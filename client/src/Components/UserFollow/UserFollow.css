@@ -1,0 +1,29 @@
+.follower {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+.followerImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+.name {
+  display: flex;
+  flex-direction: column;
+}
+.button.fc-button {
+  padding: 5px 15px;
+  border: none;
+  border-radius: 20px;
+  background: #0095f6;
+  color: #fff;
+  cursor: pointer;
+}
+.button.fc-button.UnfollowButton {
+  background: #e0245e;
+} 

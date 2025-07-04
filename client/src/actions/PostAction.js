@@ -8,7 +8,10 @@ export const getTimelinePosts = (id) => async (dispatch) => {
         const { data } = await PostApi.getTimelinePosts(id);
         dispatch({ type: "RETRIEVING_SUCCESS", data: data });
     } catch (error) {
-        console.log(error);
-        dispatch({ type: "RETRIEVING_FAIL" });
+        let privacyError = null;
+        if (error.response && error.response.data && error.response.data.error) {
+            privacyError = error.response.data.error;
+        }
+        dispatch({ type: "RETRIEVING_FAIL", error: privacyError });
     }
 }

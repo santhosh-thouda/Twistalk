@@ -1,37 +1,31 @@
-import React, { useEffect } from 'react'
-import './Posts.css';
+import React, { useEffect, useState } from 'react';
 import Post from '../Post/Post';
-import { useDispatch, useSelector } from 'react-redux';
-import { getTimelinePosts } from '../../actions/PostAction';
-import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getTimelinePosts } from '../../api/PostRequest';
 
 const Posts = () => {
-
-  const params = useParams();
-  const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.authReducer.authData)
-  let { posts, loading } = useSelector((state) => state.postReducer)
-
+  const { user } = useSelector((state) => state.authReducer.authData);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    dispatch(getTimelinePosts(user._id))
-  }, [])
-
-
-  if (params.id) {
-    posts = posts.filter((post) => post.userId === params.id)
-  }
+    const fetchPosts = async () => {
+      try {
+        const { data } = await getTimelinePosts(user._id);
+        setPosts(data);
+      } catch (err) {
+        setPosts([]);
+      }
+    };
+    if (user && user._id) fetchPosts();
+  }, [user]);
 
   return (
-    <div className='Posts'>
-
-      {loading ? "Fetching Posts..." :
-        posts.map((post, id) => {
-          return <Post data={post} id={id} />
-        })}
-
+    <div>
+      {posts.map((post, idx) => (
+        <Post key={post._id || idx} post={post} />
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default Posts
+export default Posts;

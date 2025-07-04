@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Auth.css';
-import Logo from '../../Img/logo.png';
+import Logo from '../../Img/logo2.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { logIn, signUp } from '../../actions/AuthAction.js';
 
@@ -10,6 +10,7 @@ const Auth = () => {
     const [isSignUp, setIsSignUp] = useState(true);
     const dispatch = useDispatch();
     const loading = useSelector((state) => state.authReducer.loading);
+    const error = useSelector((state) => state.authReducer.error);
 
     const [data, setData] = useState({ firstname: "", lastname: "", email: "", password: "", confirmpass: "" });
 
@@ -20,19 +21,37 @@ const Auth = () => {
     }
 
 
-    const handlSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (isSignUp) {
-            data.password === data.confirmpass ? dispatch(signUp(data)) : setConfirmPass(false)
+            // Check if all required fields are filled
+            if (!data.firstname || !data.lastname || !data.email || !data.password || !data.confirmpass) {
+                alert("Please fill in all fields");
+                return;
+            }
+            
+            // Check if passwords match
+            if (data.password !== data.confirmpass) {
+                setConfirmPass(false);
+                return;
+            }
+            
+            dispatch(signUp(data));
         } else {
-            dispatch(logIn(data))
+            // Check if email and password are filled for login
+            if (!data.email || !data.password) {
+                alert("Please fill in email and password");
+                return;
+            }
+            
+            dispatch(logIn(data));
         }
     }
 
 
 
-    const restForm = () => {
+    const resetForm = () => {
         setConfirmPass(true);
 
         setData({
@@ -51,7 +70,7 @@ const Auth = () => {
         //    Left Side
         <div className='Auth'>
             <div className="a-left">
-                <img src={Logo} alt="" />
+                <img src={Logo} alt="" style={{width: '85px', height: '50px'}}/>
                 <div className="Webname">
                     <h2>Welcome !</h2>
                     <h5>Explore the ideas throughout <br /> the world.</h5>
@@ -62,7 +81,7 @@ const Auth = () => {
             {/* Right Side */}
 
             <div className="a-right">
-                <form className='infoForm authForm' onSubmit={handlSubmit}>
+                <form className='infoForm authForm' onSubmit={handleSubmit}>
 
                     <h2>{isSignUp ? "Sign Up" : "Log In"}</h2>
 
@@ -109,10 +128,15 @@ const Auth = () => {
                         * Confirm Password is not same
                     </span>
 
+                    {error && (
+                        <span style={{ display: "block", color: "red", fontSize: "12px", alignSelf: "center", marginTop: "10px" }}>
+                            * Authentication failed. Please try again.
+                        </span>
+                    )}
 
                     <div>
                         <span style={{ fontSize: "12px", cursor: "pointer" }}
-                            onClick={() => { setIsSignUp((prev) => !prev); restForm() }}
+                            onClick={() => { setIsSignUp((prev) => !prev); resetForm() }}
                         >
                             {isSignUp ? "Already have an account? Login here" : "Don't have an account? SignUp here"}
                         </span>
