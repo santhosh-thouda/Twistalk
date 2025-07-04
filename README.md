@@ -86,6 +86,12 @@ A modern, full-stack social media web application 🌐 built with the **MERN sta
 #### Profile Views
 *Different views of user profiles and statistics*
 
+#### Chats, Messages
+*Main chat application features messaging, chats, new chats*
+
+![Alt text](twistalk5.png)
+
+
 ## 🛠️ Prerequisites
 
 Before running this application, make sure you have the following installed:
