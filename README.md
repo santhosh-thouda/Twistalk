@@ -51,17 +51,20 @@ A modern, full-stack social media web application 🌐 built with the **MERN sta
 
 #### Sign Up Page
 *User registration interface with form validation*
+
 ![Alt text](twistalk2.png)
 
 
 #### Login Page
 *Secure login page with JWT authentication*
+
 ![Alt text](twistalk3.png)
 
 ### **Main Application**
 
 #### Home Feed
 *Main timeline showing posts from followed users*
+
 ![Alt text](twistalk1.png)
 
 #### Post Sharing
@@ -71,7 +74,9 @@ A modern, full-stack social media web application 🌐 built with the **MERN sta
 *Chronological view of all posts and interactions*
 
 ### **User Profiles**
+
 ![Alt text](twistalk4.png)
+
 #### Profile Page
 *User profile with posts, followers, and following*
 
